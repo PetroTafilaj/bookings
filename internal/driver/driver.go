@@ -38,7 +38,6 @@ func ConnectSQL(dsn string) (*DB, error) {
 		return nil, err
 	}
 	return dbConn, nil
-
 }
 
 // testDB tries to ping the database

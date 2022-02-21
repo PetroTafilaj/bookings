@@ -19,8 +19,8 @@ func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error) 
 	var newID int
 
 	stmt := `insert into reservations (first_name, last_name, email, phone, start_date,
-		end_date, room_id, created_at, updated_at)
-		values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
+			end_date, room_id, created_at, updated_at) 
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
 
 	err := m.DB.QueryRowContext(ctx, stmt,
 		res.FirstName,
@@ -41,15 +41,15 @@ func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error) 
 	return newID, nil
 }
 
-// InsertRoomRestriction inserts a rrom restriction into the database
+// InsertRoomRestriction inserts a room restriction into the database
 func (m *postgresDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	stmt := `insert into room_restrictions (start_date, end_date, room_id, reservation_id,
-		created_at, updated_at, restriction_id)
-		values
-		($1, $2, $3, $4, $5, $6, $7)`
+	stmt := `insert into room_restrictions (start_date, end_date, room_id, reservation_id,	
+			created_at, updated_at, restriction_id) 
+			values
+			($1, $2, $3, $4, $5, $6, $7)`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
 		r.StartDate,
@@ -67,7 +67,7 @@ func (m *postgresDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {
 	return nil
 }
 
-// SearchAvailabilityByDatesByRoomID return true if availability exists for roomID, and false if no availability
+// SearchAvailabilityByDatesByRoomID returns true if availability exists for roomID, and false if no availability
 func (m *postgresDBRepo) SearchAvailabilityByDatesByRoomID(start, end time.Time, roomID int) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -77,10 +77,10 @@ func (m *postgresDBRepo) SearchAvailabilityByDatesByRoomID(start, end time.Time,
 	query := `
 		select
 			count(id)
-		from 
+		from
 			room_restrictions
 		where
-			room_id = $1 
+			room_id = $1
 			and $2 < end_date and $3 > start_date;`
 
 	row := m.DB.QueryRowContext(ctx, query, roomID, start, end)
@@ -95,19 +95,20 @@ func (m *postgresDBRepo) SearchAvailabilityByDatesByRoomID(start, end time.Time,
 	return false, nil
 }
 
-// SearchAvailabilityForAllRooms return a slice of available rooms, if any, for given date range
+// SearchAvailabilityForAllRooms returns a slice of available rooms, if any, for given date range
 func (m *postgresDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]models.Room, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	var rooms []models.Room
+
 	query := `
-		select 
+		select
 			r.id, r.room_name
 		from
-			rooms r 
+			rooms r
 		where r.id not in 
-		(select rr.room_id from room_restrictions rr where $1 < rr.end_date and $2 > rr.start_date)
+		(select room_id from room_restrictions rr where $1 < rr.end_date and $2 > rr.start_date);
 		`
 
 	rows, err := m.DB.QueryContext(ctx, query, start, end)
@@ -142,15 +143,15 @@ func (m *postgresDBRepo) GetRoomByID(id int) (models.Room, error) {
 	var room models.Room
 
 	query := `
-	select id, room_name, created_at, updated_at from rooms where id = $1
-	`
+		select id, room_name, created_at, updated_at from rooms where id = $1
+`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
 	err := row.Scan(
 		&room.ID,
 		&room.RoomName,
 		&room.CreatedAt,
-		&room.UpdatetAt,
+		&room.UpdatedAt,
 	)
 
 	if err != nil {
