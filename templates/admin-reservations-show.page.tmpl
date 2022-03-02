@@ -55,16 +55,16 @@ Reservation
         </div>
 
         <hr>
-        <div class="float-left">
-            <input type="submit" class="btn btn-primary" value="Save">
-            <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
-            <a href="#!" class="btn btn-info" onClick="processRes({{$res.ID}})">Mark as Processed</a>
-        </div>
-
-        <div class="float-right">
-            <a href="#!" class="btn btn-danger" onClick="deleteRes({{$res.ID}})">Delete</a>
-        </div>
-        <div class="clearfix"></div>
+            <div class="float-start">
+        <input type="submit" class="btn btn-primary" value="Save">
+        <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
+        <a href="#!" class="btn btn-info" onClick="processRes({{$res.ID}})">Mark as Processed</a>
+    </div>
+     
+    <div class="float-end">
+        <a href="#!" class="btn btn-danger" onClick="deleteRes({{$res.ID}})">Delete</a>
+    </div>
+    <div class="clearfix"></div>
     </form>
 
 </div>
@@ -72,19 +72,20 @@ Reservation
 
 {{define "js"}}
 {{$src := index .StringMap "src"}}
-<script>
-    function processRes(id) {
-        attention.custom({
-            icon: 'warning',
-            msg: 'Are you sure?',
-            callback: function (result) {
-                if (result !== false) {
-                    window.location.href = "/admin/process-reservation/{{$src}}/" + id;
-
+    <script>
+        function processRes(id) {
+            attention.custom({
+                icon: 'warning',
+                msg: 'Are you sure?',
+                callback: function (result) {
+                    if (result !== false) {
+                        window.location.href = "/admin/process-reservation/{{$src}}/" + id;
+     
+                    }
                 }
-            }
-        })
-
+            })
+        }
+     
         function deleteRes(id) {
             attention.custom({
                 icon: 'warning',
@@ -92,11 +93,11 @@ Reservation
                 callback: function (result) {
                     if (result !== false) {
                         window.location.href = "/admin/delete-reservation/{{$src}}/" + id;
-
+     
                     }
                 }
             })
         }
-</script>
+    </script>
 
 {{end}}
