@@ -48,6 +48,7 @@ func main() {
 	log.Fatal(err)
 }
 
+
 func run() (*driver.DB, error) {
 	// what am I going to put in the session
 	gob.Register(models.Reservation{})
