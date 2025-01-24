@@ -18,6 +18,7 @@ import (
 )
 
 const portNumber = ":8080"
+const hello = "hello"
 
 var app config.AppConfig
 var session *scs.SessionManager
